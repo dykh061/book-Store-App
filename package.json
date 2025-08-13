@@ -1,0 +1,33 @@
+{
+  "name": "book-store-app",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "bookstore",
+    "nodejs"
+  ],
+  "homepage": "https://github.com/dykh061/book-Store-App#readme",
+  "bugs": {
+    "url": "https://github.com/dykh061/book-Store-App/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/dykh061/book-Store-App.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.3",
+    "mongoose": "^8.17.1",
+    "mongoose-delete": "^1.0.2",
+    "nodemon": "^3.1.10",
+    "sass": "^1.90.0",
+    "slugify": "^1.6.6"
+  }
+}
