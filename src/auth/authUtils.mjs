@@ -1,14 +1,10 @@
 import JWT from "jsonwebtoken";
 import asyncHandler from "../helpers/asyncHandler.helper.mjs";
-import keyTokenModel from "../models/keyToken.model.mjs";
 import customerModel from "../models/customer.model.mjs";
-import {
-  NotFoundError,
-  InternalServerError,
-  UnauthorizedError,
-} from "../core/error.response.mjs";
+import { NotFoundError, UnauthorizedError } from "../core/error.response.mjs";
 import AccessService from "../services/access.service.mjs";
 import { setCookie } from "../utils/index.mjs";
+import keyTokenservice from "../services/keyToken.service.mjs";
 
 const HEADER = {
   API_KEY: "x-api-key",
@@ -17,83 +13,95 @@ const HEADER = {
   REFRESHTOKEN: "x-rtoken-id",
 };
 
+const handleRefreshToken = asyncHandler(async (req, res, next) => {
+  if (!req.accessTokenExpired) {
+    return next();
+  }
+
+  const { keyCustomers, decoded } = req;
+  const refreshToken =
+    req.cookies[HEADER.REFRESHTOKEN] || req.headers[HEADER.REFRESHTOKEN];
+
+  if (!refreshToken) {
+    const e = new UnauthorizedError("No Refresh Token");
+    e.action = "LOGIN_REQUIRED";
+    e.redirectTo = req.originalUrl;
+    throw e;
+  }
+
+  let decodedRefresh;
+  try {
+    decodedRefresh = await verifyToken(refreshToken, keyCustomers.publicKey);
+  } catch {
+    const e = new UnauthorizedError("Invalid Refresh Token");
+    e.action = "LOGIN_REQUIRED";
+    e.redirectTo = req.originalUrl;
+    throw e;
+  }
+  const result = await AccessService.handleRefreshToken({
+    _id: decodedRefresh.userId,
+    Email: decodedRefresh.Email,
+    refreshToken: refreshToken,
+    keyCustomers: keyCustomers,
+  });
+  setAuthCookies(res, result.metadata.tokens);
+  req.userId = decodedRefresh.userId;
+  req.user = await customerModel.findById(decodedRefresh.userId).lean();
+  req.keyCustomers = result.metadata.newKey;
+  req.decoded = decodedRefresh;
+  return next();
+});
+
 // kiểm tra access Token có hợp lệ không
 const authentication = asyncHandler(async (req, res, next) => {
   const accessToken =
     req.cookies[HEADER.AUTHORIZATION] ||
     req.headers[HEADER.AUTHORIZATION]?.split(" ")[1];
   if (!accessToken) {
-    const refreshToken =
-      req.cookies[HEADER.REFRESHTOKEN] || req.headers[HEADER.REFRESHTOKEN];
-    if (refreshToken) {
-      const result = await AccessService.handleRefreshToken({
-        _id: req.userId,
-        Email: req.user.Email,
-        refreshToken,
-        keyCustomers: req.keyCustomers,
-      });
-      if (result.metadata.tokens) {
-        setCookie(
-          res,
-          HEADER.AUTHORIZATION,
-          result.metadata.tokens.accessToken,
-          { maxAge: 30 * 60 * 1000 }
-        );
-        setCookie(
-          res,
-          HEADER.REFRESHTOKEN,
-          result.metadata.tokens.refreshToken,
-          { maxAge: 7 * 24 * 60 * 60 * 1000 }
-        );
-        return next();
-      }
-      throw new UnauthorizedError("Refresh Token Failed. Please login again.");
-    }
-    throw new UnauthorizedError(
-      "Access Token and Refresh Token not found. Please login."
-    );
+    const e = new UnauthorizedError("No Access Token");
+    e.action = "LOGIN_REQUIRED";
+    e.redirectTo = req.originalUrl;
+    throw e;
   }
-  const publicKey = req.keyCustomers.publicKey;
-  if (!publicKey) throw new NotFoundError("Invalid Request");
-
+  let decode;
   try {
-    const verify = await verifyToken(accessToken, publicKey);
-    if (!verify) throw new NotFoundError("Invalid Request");
-    if (req.userId !== verify.userId)
-      throw new InternalServerError("UserId not match");
+    decode = JWT.decode(accessToken);
+  } catch {
+    const e = new UnauthorizedError("Invalid Access Token");
+    e.action = "LOGIN_REQUIRED";
+    e.redirectTo = req.originalUrl;
+    throw e;
+  }
+  if (!decode?.userId) {
+    const e = new UnauthorizedError("Access Token Invalid");
+    e.action = "LOGIN_REQUIRED";
+    e.redirectTo = req.originalUrl;
+    throw e;
+  }
+  const keyCustomers = await keyTokenservice.findByUserId(decode.userId);
+  if (!keyCustomers) {
+    const e = new NotFoundError("Key Not Found For User");
+    e.action = "LOGIN_REQUIRED";
+    e.redirectTo = req.originalUrl;
+    throw e;
+  }
+  try {
+    const verify = await verifyToken(accessToken, keyCustomers.publicKey);
+    req.userId = verify.userId;
+    req.keyCustomers = keyCustomers;
+    req.user = await customerModel.findById(verify.userId).lean();
     return next();
-  } catch (error) {
-    if (error.name === "TokenExpiredError") {
-      const refreshToken =
-        req.cookies[HEADER.REFRESHTOKEN] || req.headers[HEADER.REFRESHTOKEN];
-      const result = await AccessService.handleRefreshToken({
-        _id: req.userId,
-        Email: req.user.Email,
-        refreshToken,
-        keyCustomers: req.keyCustomers,
-      });
-      if (result.metadata.tokens) {
-        setCookie(
-          res,
-          HEADER.AUTHORIZATION,
-          result.metadata.tokens.accessToken,
-          {
-            maxAge: 30 * 60 * 1000, // 30 phút
-          }
-        );
-        setCookie(
-          res,
-          HEADER.REFRESHTOKEN,
-          result.metadata.tokens.refreshToken,
-          {
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
-          }
-        );
-        next();
-      }
-      throw new UnauthorizedError("Refresh Token Failed. Please Login again.");
+  } catch (err) {
+    if (err.name === "TokenExpiredError") {
+      req.accessTokenExpired = true;
+      req.keyCustomers = keyCustomers;
+      req.decoded = decode;
+      return next();
     }
-    throw new InternalServerError("Invalid Access Token");
+    const e = new UnauthorizedError("Access Token Invalid");
+    e.action = "LOGIN_REQUIRED";
+    e.redirectTo = req.originalUrl;
+    throw e;
   }
 });
 
@@ -114,23 +122,6 @@ const authorize = (roles = []) => {
   });
 };
 
-// Middleware xác thực user đã đăng nhập
-const preAuthentication = asyncHandler(async (req, res, next) => {
-  const userId = req.headers[HEADER.CLIENT_ID];
-  if (!userId) throw new Error("Invalid Request");
-
-  const user = await customerModel.findById(userId).lean();
-  if (!user) throw new Error("User not registered in system");
-
-  const keyCustomers = await keyTokenModel.findOne({ user: userId });
-  if (!keyCustomers) throw new Error("Invalid Request");
-
-  req.keyCustomers = keyCustomers;
-  req.userId = userId;
-  req.user = user;
-  return next();
-});
-
 // Tạo cặp accessToken và refreshToken
 const createTokenPair = async (payload, publicKey, privateKey) => {
   const accessToken = JWT.sign(payload, privateKey, {
@@ -143,7 +134,6 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
   });
   try {
     const decode = await verifyToken(accessToken, publicKey);
-    console.log("Decode Access Token: ", decode);
   } catch (err) {
     console.error("Error verify access token: ", err);
   }
@@ -178,11 +168,11 @@ const setAuthCookies = (res, keyUser) => {
 
 const result = {
   HEADER,
+  handleRefreshToken,
   setAuthCookies,
   authentication,
   createTokenPair,
   verifyToken,
-  preAuthentication,
   authorize,
 };
 export default result;

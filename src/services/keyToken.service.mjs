@@ -42,7 +42,7 @@ class keyTokenservice {
         new: true, // trả về document mới
       };
 
-    return await keyTokenModel.updateOne(filter, update, options);
+    return await keyTokenModel.findOneAndUpdate(filter, update, options);
   };
   static deleteKeyById = async (uId) => {
     return await keyTokenModel.deleteMany({ user: uId });

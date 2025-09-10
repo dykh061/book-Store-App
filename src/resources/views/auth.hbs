@@ -5,9 +5,17 @@
         <div class="card bg-dark text-white" style="border-radius: 1rem;">
           <div class="card-body p-5 text-center">
 
-            <!-- LOGIN FORM -->
-            <form action="/v1/api/login" method="POST">
+            {{#if success}}
+              <div class="alert alert-success">{{success}}</div>
+            {{/if}}
 
+            {{#if error}}
+              <div class="alert alert-danger">{{error}}</div>
+            {{/if}}
+
+            <!-- LOGIN FORM -->
+            <form action="/login" method="POST">
+              <input type="hidden" name="next" value="{{next}}" />
               <div id="loginForm" class="form-toggle">
                 <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                 <p class="text-white-50 mb-5">Please enter your login and
@@ -71,7 +79,7 @@
             </form>
 
             <!-- SIGNUP FORM -->
-            <form action="/v1/api/signup" method="POST">
+            <form action="/signup" method="POST">
               <div id="signupForm" class="form-toggle d-none">
                 <h2 class="fw-bold mb-2 text-uppercase">Sign Up</h2>
                 <p class="text-white-50 mb-5">Please enter your details to

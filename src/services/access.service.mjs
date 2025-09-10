@@ -16,7 +16,7 @@ class AccessService {
     keyCustomers,
   }) => {
     if (keyCustomers.refreshTokensUsed.includes(refreshToken)) {
-      await keyTokenService.deleteKeyById(userId);
+      await keyTokenService.deleteKeyById(_id);
       throw new Error("Something wrong happen. Pls re-login");
     }
     if (refreshToken !== keyCustomers.refreshToken) {
@@ -33,12 +33,17 @@ class AccessService {
       keyCustomers.privateKey
     );
 
-    await keyTokenService.updateKeyToken({ _id, tokens, refreshToken });
+    const newKey = await keyTokenService.updateKeyToken({
+      _id,
+      tokens,
+      refreshToken,
+    });
     return {
       code: 200,
       message: "Get new Tokens successfully",
       metadata: {
         tokens,
+        newKey,
       },
     };
   };
