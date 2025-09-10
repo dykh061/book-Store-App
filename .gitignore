@@ -1,3 +1,12 @@
+# Dependencies
 node_modules/
+
+# Lock file (nếu không muốn commit)
 package-lock.json
+
+# VSCode settings
 .vscode/
+
+# CSS build + sourcemap
+src/public/css/
+

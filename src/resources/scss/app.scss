@@ -1,0 +1,13 @@
+// layouts
+@use "layouts/header";
+@use "layouts/nav";
+@use "layouts/footer";
+
+//base
+@use "variables";
+
+// pages
+@use "pages/auth";
+body {
+  background: linear-gradient(to right, #ede7f6, #e3f2fd);
+}

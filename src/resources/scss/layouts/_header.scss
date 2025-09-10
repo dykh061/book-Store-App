@@ -1,0 +1,82 @@
+/* ===== HEADER ===== */
+.site-header .header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bg-website {
+  height: 123px;
+  background: linear-gradient(to right, #ede7f6, #e3f2fd);
+}
+
+/* ===== SEARCH ===== */
+.header-search {
+  flex: 1;
+  max-width: 700px; /* nổi bật hơn */
+  margin: 0 auto; /* căn giữa */
+}
+
+.header-actions {
+  margin-right: 15px; /* tránh dính sát mép */
+}
+
+.header-search-input {
+  height: 46px;
+  font-size: 0.95rem;
+  border-radius: 50px 0 0 50px !important;
+  padding-left: 1rem;
+  border: 1px solid #ddd;
+  transition: box-shadow 0.3s ease;
+}
+
+.header-search-input:focus {
+  outline: none;
+  box-shadow: 0 0 6px rgba(37, 117, 252, 0.4);
+}
+
+.header-search-btn {
+  width: 46px;
+  font-size: 1.1rem;
+  border-radius: 0 50px 50px 0 !important;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: #fff;
+  border: none;
+  transition: background 0.3s ease;
+}
+
+.header-search-btn:hover {
+  background: linear-gradient(135deg, #2575fc, #6a11cb);
+}
+
+/* Icon giỏ hàng */
+.header-cart i {
+  font-size: 1.6rem; /* tăng size icon */
+  line-height: 1; /* tránh bị lệch */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Badge trên giỏ hàng */
+.header-cart-badge {
+  font-size: 0.7rem;
+  padding: 0.35em 0.5em;
+}
+
+/* Avatar */
+.header-avatar {
+  width: 58px; /* to hơn chút so với 50px */
+  height: 58px;
+  border-radius: 50%;
+  object-fit: cover; /* ảnh luôn vừa khung */
+  border: 2px solid #fff; /* viền trắng nổi bật */
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); /* đổ bóng rõ hơn */
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.header-avatar:hover {
+  transform: scale(1.08); /* hover phóng to hơn chút */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); /* hover đổ bóng đậm hơn */
+}

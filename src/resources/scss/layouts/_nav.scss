@@ -1,0 +1,69 @@
+/* ===== NAVBAR ===== */
+.custom-navbar {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  border-radius: 50px;
+  padding: 0.4rem 2rem;
+  margin: 1rem auto; /* giữa theo chiều ngang */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+}
+
+.nav-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 5.5rem; /* mặc định desktop */
+}
+
+.nav-link {
+  color: #fff !important;
+  font-size: 1rem;
+  font-weight: 900;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: rgba(0, 0, 0, 0.25);
+  color: #4fc55f !important;
+}
+
+/* ========== RESPONSIVE ========== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .nav-list {
+    gap: 3rem; /* giảm khoảng cách */
+  }
+  .nav-link {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+  .custom-navbar {
+    margin: 1.5rem auto; /* giữ giữa + thêm khoảng cách trên dưới */
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .custom-navbar {
+    padding: 0.4rem 1rem; /* nhỏ padding container */
+    margin: 0;
+    margin-top: 70px !important;
+    margin: 2rem auto; /* mobile nhiều khoảng cách hơn */
+  }
+  .nav-list {
+    gap: 1.2rem; /* thu hẹp khoảng cách giữa các link */
+  }
+  .nav-link {
+    font-size: 0.8rem; /* chữ nhỏ hơn */
+    padding: 0.3rem 0.6rem;
+  }
+}

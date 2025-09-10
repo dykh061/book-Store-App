@@ -1,1 +1,75 @@
-<h1>header</h1>
+<header class="site-header sticky-top border-bottom bg-website">
+  <div
+    class="container header-inner d-flex align-items-center justify-content-between"
+  >
+    <!-- Logo -->
+    <a href="#" class="navbar-brand m-0 p-0 d-flex">
+      <img src="/images/logo.png" width="160" height="132" />
+    </a>
+
+    <!-- Search giữa -->
+    <form
+      class="header-search mx-auto flex-grow-1 d-none d-md-block"
+      role="search"
+      style="max-width: 600px;"
+    >
+      <div class="input-group rounded-pill overflow-hidden">
+        <input
+          type="search"
+          class="form-control header-search-input"
+          placeholder="Tìm sản phẩm…"
+        />
+        <button class="btn btn-primary header-search-btn" type="submit">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </form>
+
+    <!-- Cart + Avatar -->
+    <div class="header-actions d-flex align-items-center gap-4 me-0">
+      <a href="#" class="text-decoration-none position-relative header-cart">
+        <i class="bi bi-cart3"></i>
+        <span
+          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger header-cart-badge"
+        >3</span>
+      </a>
+      <div class="dropdown">
+        <a
+          href="#"
+          class="d-flex align-items-center text-decoration-none"
+          data-bs-toggle="dropdown"
+        >
+          <!-- Avatar hiển thị -->
+          <img
+            src="/images/default-avatar.jpg"
+            alt="User Avatar"
+            class="header-avatar"
+            id="userAvatar"
+          />
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm header-dropdown">
+          <li><a class="dropdown-item" href="#">Tài khoản</a></li>
+          <li><a class="dropdown-item" href="#">Đơn hàng</a></li>
+          <li><hr class="dropdown-divider" /></li>
+          <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search mobile -->
+  <div class="container py-2 d-md-none">
+    <form role="search">
+      <div class="input-group rounded-pill overflow-hidden">
+        <input
+          type="search"
+          class="form-control header-search-input"
+          placeholder="Tìm sản phẩm…"
+        />
+        <button class="btn btn-primary header-search-btn" type="submit">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+</header>
