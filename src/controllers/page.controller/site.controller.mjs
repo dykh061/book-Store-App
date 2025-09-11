@@ -34,7 +34,7 @@ class SiteController {
   //[POST] sigup
   async HandleSignup(req, res) {
     const result = await AccessService.SignUp({ userData: req.body });
-    if (result.metadata.keyUser) {
+    if (result.metadata?.keyUser) {
       setAuthCookies(res, result.metadata.keyUser);
     }
     return res.redirect(
@@ -54,7 +54,7 @@ class SiteController {
       });
     }
 
-    if (result.metadata.keyUser) {
+    if (result.metadata?.keyUser) {
       setAuthCookies(res, result.metadata.keyUser);
     }
 

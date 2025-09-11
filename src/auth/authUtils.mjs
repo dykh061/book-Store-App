@@ -1,7 +1,11 @@
 import JWT from "jsonwebtoken";
 import asyncHandler from "../helpers/asyncHandler.helper.mjs";
 import customerModel from "../models/customer.model.mjs";
-import { NotFoundError, UnauthorizedError } from "../core/error.response.mjs";
+import {
+  NotFoundError,
+  UnauthorizedError,
+  ForbiddenError,
+} from "../core/error.response.mjs";
 import AccessService from "../services/access.service.mjs";
 import { setCookie } from "../utils/index.mjs";
 import keyTokenservice from "../services/keyToken.service.mjs";
@@ -112,12 +116,14 @@ const authorize = (roles = []) => {
   }
   return asyncHandler(async (req, res, next) => {
     const user = req.user;
-    if (!user) throw new Error("Invalid Request");
-    if (!user.roles) throw new Error("User has no roles assigned");
+    if (!user) throw new ForbiddenError("Invalid Request");
+    if (!user.roles) throw new ForbiddenError("User has no roles assigned");
 
     const hasRole = roles.some((role) => user.roles.includes(role));
     if (!hasRole)
-      throw new Error("You are not authorized to access this resource");
+      throw new ForbiddenError(
+        "You are not authorized to access this resource"
+      );
     return next();
   });
 };

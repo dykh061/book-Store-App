@@ -7,7 +7,7 @@ const { HEADER, setAuthCookies } = result;
 class AccessController {
   SignUp = async (req, res, next) => {
     const result = await AccessService.SignUp({ userData: req.body });
-    if (result.metadata.keyUser) {
+    if (result.metadata?.keyUser) {
       setAuthCookies(res, result.metadata.keyUser);
     }
 
@@ -18,13 +18,8 @@ class AccessController {
   };
   Login = async (req, res, next) => {
     const result = await AccessService.Login(req.body);
-    if (result.metadata == null || result.metadata == undefined) {
-      return res.status(500).json({
-        code: 50000,
-        message: "Metadata is null or undefined",
-      });
-    }
-    if (result.metadata.keyUser) {
+
+    if (result.metadata?.keyUser) {
       setAuthCookies(res, result.metadata.keyUser);
     }
 
@@ -41,7 +36,7 @@ class AccessController {
         req.cookies[HEADER.REFRESHTOKEN] || req.headers[HEADER.REFRESHTOKEN],
       keyCustomers: req.keyCustomers,
     });
-    if (result.metadata.tokens) {
+    if (result.metadata?.tokens) {
       setAuthCookies(res, result.metadata.tokens);
     }
     new OkResponse({
