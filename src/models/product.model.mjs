@@ -45,6 +45,11 @@ const productSchema = new Schema(
       required: true,
       enum: ["Book", "Stationery"],
     },
+    product_shopId: {
+      type: Schema.Types.ObjectId,
+      ref: "Customer",
+      required: true,
+    },
     product_ratingsAverage: {
       type: Number,
       default: 4.5,
@@ -65,7 +70,7 @@ const productSchema = new Schema(
 
 productSchema.index({ product_name: "text", product_description: "text" });
 
-productSchema.pre("save", function (text) {
+productSchema.pre("save", function (next) {
   this.product_slug = slugify(this.product_name, { lower: true });
   next();
 });

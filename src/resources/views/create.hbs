@@ -1,0 +1,232 @@
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <!-- form nhỏ gọn lại -->
+      <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Create Product</h4>
+        </div>
+        <div class="card-body">
+          <form id="createProductForm" method="post" action="/v1/view/create">
+            <!-- Product Common Fields -->
+            <div class="mb-3">
+              <label class="form-label">Product Name</label>
+              <input
+                type="text"
+                class="form-control"
+                name="product_name"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Thumbnail (URL)</label>
+              <input
+                type="text"
+                class="form-control"
+                name="product_thumb"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                name="product_description"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Price (VND)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="product_price"
+                  required
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Quantity</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="product_quantity"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Product Type</label>
+              <select
+                class="form-select"
+                name="product_type"
+                id="productType"
+                required
+              >
+                <option value="">-- Select Type --</option>
+                <option value="Book">Book</option>
+                <option value="Stationery">Stationery</option>
+              </select>
+            </div>
+            <!-- Book Specific Fields -->
+            <div id="bookFields" class="d-none">
+              <hr />
+              <h5>Book Details</h5>
+              <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="product_attributes[title]"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Author</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="product_attributes[author]"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Publisher</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="product_attributes[publisher]"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Publication Year</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="product_attributes[publication_year]"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">ISBN</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="product_attributes[isbn]"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Genre</label>
+                <select class="form-select" name="product_attributes[genre]">
+                  <option>Fiction</option>
+                  <option>Non-Fiction</option>
+                  <option>Science</option>
+                  <option>Children</option>
+                  <option>Biography</option>
+                  <option>Fantasy</option>
+                  <option>Mystery</option>
+                  <option>Education</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Language</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="product_attributes[language]"
+                  value="Vietnamese"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Format</label>
+                <select class="form-select" name="product_attributes[format]">
+                  <option>Hardcover</option>
+                  <option selected>Paperback</option>
+                  <option>Ebook</option>
+                </select>
+              </div>
+            </div>
+            <!-- Stationery Specific Fields -->
+            <div id="stationeryFields" class="d-none">
+              <hr />
+              <h5>Stationery Details</h5>
+              <div class="mb-3">
+                <label class="form-label">Type</label>
+                <select class="form-select" name="product_attributes[type]">
+                  <option>Pen</option>
+                  <option>Pencil</option>
+                  <option>Ruler</option>
+                  <option>Notebook</option>
+                  <option>Eraser</option>
+                  <option>Highlighter</option>
+                  <option>Glue</option>
+                  <option>Scissors</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Brand</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="product_attributes[brand]"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Color</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="product_attributes[color]"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Material</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="product_attributes[material]"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Size</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="product_attributes[size]"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Pack Quantity</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="product_attributes[pack_quantity]"
+                  value="1"
+                />
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary px-5">
+                Create
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const productType = document.getElementById("productType"); const bookFields =
+  document.getElementById("bookFields"); const stationeryFields =
+  document.getElementById("stationeryFields");
+  productType.addEventListener("change", () => {
+  bookFields.classList.add("d-none"); stationeryFields.classList.add("d-none");
+  if (productType.value === "Book") { bookFields.classList.remove("d-none"); }
+  else if (productType.value === "Stationery") {
+  stationeryFields.classList.remove("d-none"); } });
+</script>

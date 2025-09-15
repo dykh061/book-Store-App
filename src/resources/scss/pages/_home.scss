@@ -1,0 +1,59 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* ép tất cả card cao bằng nhau */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ảnh trong card */
+.card-img-top {
+  height: 200px; /* đồng bộ chiều cao ảnh */
+  object-fit: cover; /* ảnh cắt vừa khung */
+}
+
+/* Nội dung chính của card */
+.card-body {
+  flex: 1; /* cho body chiếm hết phần còn lại */
+  display: flex;
+  flex-direction: column;
+  position: relative; /* để giá tiền tính vị trí tuyệt đối dựa trên card-body */
+  padding-bottom: 50px; /* tạo khoảng trống cho giá tiền nếu cần */
+}
+
+.price-tag {
+  position: absolute;
+  bottom: 15px; /* cách đáy card */
+  left: 15px; /* cách trái card */
+  font-weight: bold;
+  color: #28a745; /* màu xanh */
+  font-size: 1.1rem;
+}
+.card-body .mt-auto {
+  margin-top: auto; /* ép phần giá + button luôn dính dưới */
+}
+
+/* Overlay khi hover */
+.card-overlay {
+  position: absolute;
+  top: 0;
+  left: -100%; /* ẩn hoàn toàn bên trái */
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* nền mờ */
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  text-align: center;
+  transition: left 0.4s ease-in-out; /* hiệu ứng trượt */
+}
+
+.card:hover .card-overlay {
+  left: 0; /* trượt sang phải để hiện ra */
+}
+
+.overlay-content {
+  max-width: 90%;
+}

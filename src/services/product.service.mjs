@@ -8,6 +8,7 @@ class Product {
     product_price,
     product_quantity,
     product_type,
+    product_shopId,
     product_attributes,
   }) {
     this.product_name = product_name;
@@ -16,10 +17,28 @@ class Product {
     this.product_price = product_price;
     this.product_quantity = product_quantity;
     this.product_type = product_type;
+    this.product_shopId = product_shopId;
     this.product_attributes = product_attributes;
   }
   async CreateProduct(Product_id) {
     return await product.create({ ...this, _id: Product_id });
+  }
+}
+
+class productFactory {
+  static productRegistry = {};
+
+  static registerProductType(type, classRef) {
+    productFactory.productRegistry[type] = classRef;
+  }
+
+  static async createProduct(type, shopId, payload) {
+    const productClass = productFactory.productRegistry[type];
+    if (!productClass) {
+      throw new BadRequestError(`Invalid Product Type ${type}`);
+    }
+    const newPayload = { ...payload, product_shopId: shopId };
+    return await new productClass(newPayload).CreateProduct();
   }
 }
 
@@ -36,22 +55,6 @@ class Stationery extends Product {
     const newStationery = await stationery.create(this.product_attributes);
     const newProduct = await super.CreateProduct(newStationery._id);
     return { ...newProduct.toObject(), stationery: newStationery };
-  }
-}
-
-class productFactory {
-  static productRegistry = {};
-
-  static registerProductType(type, classRef) {
-    productFactory.productRegistry[type] = classRef;
-  }
-
-  static async createProduct(type, payload) {
-    const productClass = productFactory.productRegistry[type];
-    if (!productClass) {
-      throw new BadRequestError(`Invalid Product Type ${type}`);
-    }
-    return await new productClass(payload).CreateProduct();
   }
 }
 

@@ -1,7 +1,8 @@
 import AccessService from "../../services/access.service.mjs";
 import result from "../../auth/authUtils.mjs";
 const { setAuthCookies } = result;
-
+import { product } from "../../models/product.model.mjs";
+import { NotFoundError } from "../../core/error.response.mjs";
 class SiteController {
   // [GET] login
   LoginPage(req, res) {
@@ -25,9 +26,18 @@ class SiteController {
   }
 
   // [GET] home
-  HomePage(req, res) {
+  async HomePage(req, res) {
+    const Products = await product
+      .find({
+        isPublish: true,
+        isDraft: false,
+      })
+      .populate("product_shopId", "UserName")
+      .lean();
+    if (!Products) throw new NotFoundError("No products found");
     res.render("home", {
       layout: "main",
+      Products,
     });
   }
 
