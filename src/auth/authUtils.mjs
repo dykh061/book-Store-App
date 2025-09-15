@@ -117,6 +117,7 @@ const authorize = (roles = []) => {
   return asyncHandler(async (req, res, next) => {
     const user = req.user;
     if (!user) throw new ForbiddenError("Invalid Request");
+
     if (!user.roles) throw new ForbiddenError("User has no roles assigned");
 
     const hasRole = roles.some((role) => user.roles.includes(role));

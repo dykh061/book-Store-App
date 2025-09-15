@@ -19,6 +19,7 @@
 // 504 Gateway Timeout: Server trung gian không nhận được phản hồi kịp thời.
 
 export const StatusCode = {
+  Bad_Request: 400,
   FORBIDDEN: 403,
   CONFLICT: 409,
   NOT_FOUND: 404,
@@ -27,6 +28,7 @@ export const StatusCode = {
 };
 
 export const ReasonStatusCode = {
+  BAD_REQUEST: "Bad Request",
   FORBIDDEN: "Forbidden",
   CONFLICT: "Conflict",
   NOT_FOUND: "Not Found",
@@ -63,6 +65,15 @@ export class NotFoundError extends ErrorResponse {
   constructor(
     message = ReasonStatusCode.NOT_FOUND,
     statusCode = StatusCode.NOT_FOUND
+  ) {
+    super(message, statusCode);
+  }
+}
+
+export class BadRequestError extends ErrorResponse {
+  constructor(
+    message = ReasonStatusCode.BAD_REQUEST,
+    statusCode = StatusCode.Bad_Request
   ) {
     super(message, statusCode);
   }

@@ -31,7 +31,7 @@ class SiteController {
     });
   }
 
-  //[POST] sigup
+  //[POST] signup
   async HandleSignup(req, res) {
     const result = await AccessService.SignUp({ userData: req.body });
     if (result.metadata?.keyUser) {
@@ -43,6 +43,7 @@ class SiteController {
     );
   }
 
+  // [POST] login
   async HandleLogin(req, res) {
     const result = await AccessService.Login(req.body);
     if (!result.metadata) {
@@ -61,6 +62,21 @@ class SiteController {
     // Lấy next từ body hoặc query
     const redirectUrl = req.body.next || req.query.next || "/home";
     return res.redirect(redirectUrl);
+  }
+
+  async HandleLogout(req, res) {
+    const result = await AccessService.Logout(req.userId);
+
+    if (!result || result.deletedCount === 0) {
+      // lỗi hệ thống (không xoá được token mặc dù user đang login)
+      return res.status(500).json({
+        message: "Đăng xuất thất bại, vui lòng thử lại",
+      });
+    }
+    return res.render("auth", {
+      layout: "auth",
+      showForm: "login",
+    });
   }
 }
 const siteController = new SiteController();

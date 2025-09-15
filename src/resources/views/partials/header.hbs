@@ -51,7 +51,11 @@
           <li><a class="dropdown-item" href="#">Tài khoản</a></li>
           <li><a class="dropdown-item" href="#">Đơn hàng</a></li>
           <li><hr class="dropdown-divider" /></li>
-          <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+          <li>
+            <form action="/logout" method="POST">
+              <button type="submit" class="dropdown-item">Đăng xuất</button>
+            </form>
+          </li>
         </ul>
       </div>
     </div>

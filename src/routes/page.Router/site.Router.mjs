@@ -25,4 +25,6 @@ router.use(handleRefreshToken);
 
 router.get("/home", siteController.HomePage);
 
+router.post("/logout", asyncHandler(siteController.HandleLogout));
+
 export default router;
