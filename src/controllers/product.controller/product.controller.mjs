@@ -12,7 +12,15 @@ class ProductController {
 
   // [GET] list product
   async getListProductOfUser(req, res, next) {
-    const { limit, page, sort, order, ...filter } = req.query;
+    const {
+      sort,
+      order,
+      limit: rawLimit,
+      page: rawPage,
+      ...filter
+    } = req.query;
+    const limit = Number(rawLimit) || 50;
+    const page = Number(rawPage) || 1;
     const userId = req.userId;
     if (!userId) throw new BadRequestError("Invalid UserId");
     filter.product_shopId = userId;
@@ -29,8 +37,8 @@ class ProductController {
     const pagesArr = await getPaginationArray(Number(page) || 1, totalPage);
     res.render("product", {
       layout: "main",
-      page: Number(page) || 1,
-      limit: Number(limit) || 50,
+      page,
+      limit,
       products,
       totalPage,
       pagesArr,

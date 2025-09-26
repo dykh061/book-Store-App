@@ -2,7 +2,7 @@ import AccessService from "../../services/access.service.mjs";
 import result from "../../auth/authUtils.mjs";
 const { setAuthCookies } = result;
 import productService from "../../services/product.service.mjs";
-import { NotFoundError } from "../../core/error.response.mjs";
+import { NotFoundError, BadRequestError } from "../../core/error.response.mjs";
 import { getPaginationArray } from "../../utils/index.mjs";
 
 class SiteController {
@@ -29,7 +29,15 @@ class SiteController {
 
   // [GET] home
   async HomePage(req, res) {
-    const { limit, page, sort, order, ...filter } = req.query;
+    const {
+      sort,
+      order,
+      limit: rawLimit,
+      page: rawPage,
+      ...filter
+    } = req.query;
+    const limit = Number(rawLimit) || 50;
+    const page = Number(rawPage) || 1;
     const Products = await productService.showProducts({
       page,
       limit,
@@ -45,8 +53,8 @@ class SiteController {
     const pagesArr = await getPaginationArray(Number(page) || 1, totalPage);
     res.render("home", {
       layout: "main",
-      page: Number(page) || 1,
-      limit: Number(limit) || 50,
+      page,
+      limit,
       Products,
       totalPage,
       pagesArr,
