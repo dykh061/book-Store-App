@@ -40,6 +40,29 @@ class productFactory {
     const newPayload = { ...payload, product_shopId: shopId };
     return await new productClass(newPayload).CreateProduct();
   }
+  static async showProducts({
+    limit = 50,
+    page = 1,
+    sortField = "ctime",
+    sortOrder = -1,
+    filter = {},
+  }) {
+    const skip = (page - 1) * limit;
+    const Products = await product
+      .find(filter)
+      .populate("product_shopId", "UserName")
+      .sort({ [sortField]: sortOrder })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+    if (!Products) throw new BadRequestError("Not found products");
+
+    return Products;
+  }
+
+  static async countProducts(filter = {}) {
+    return await product.countDocuments(filter);
+  }
 }
 
 class Book extends Product {

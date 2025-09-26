@@ -16,6 +16,12 @@ import path from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// handlebars-helpers
+import exphbs from "express-handlebars";
+import helpers from "handlebars-helpers";
+
+const multiHelpers = helpers();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,6 +33,7 @@ app.engine(
   "hbs",
   engine({
     extname: ".hbs",
+    helpers: multiHelpers,
   })
 );
 app.set("view engine", "hbs");

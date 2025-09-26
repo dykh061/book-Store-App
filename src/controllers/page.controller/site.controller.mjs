@@ -1,8 +1,10 @@
 import AccessService from "../../services/access.service.mjs";
 import result from "../../auth/authUtils.mjs";
 const { setAuthCookies } = result;
-import { product } from "../../models/product.model.mjs";
+import productService from "../../services/product.service.mjs";
 import { NotFoundError } from "../../core/error.response.mjs";
+import { getPaginationArray } from "../../utils/index.mjs";
+
 class SiteController {
   // [GET] login
   LoginPage(req, res) {
@@ -27,17 +29,27 @@ class SiteController {
 
   // [GET] home
   async HomePage(req, res) {
-    const Products = await product
-      .find({
-        isPublish: true,
-        isDraft: false,
-      })
-      .populate("product_shopId", "UserName")
-      .lean();
+    const { limit, page, sort, order, ...filter } = req.query;
+    const Products = await productService.showProducts({
+      page,
+      limit,
+      sort,
+      order,
+      filter,
+    });
+
     if (!Products) throw new NotFoundError("No products found");
+    const totalProducts = await productService.countProducts(filter);
+    if (!totalProducts) throw new BadRequestError("Invalid found products");
+    const totalPage = Math.ceil(totalProducts / limit);
+    const pagesArr = await getPaginationArray(Number(page) || 1, totalPage);
     res.render("home", {
       layout: "main",
+      page: Number(page) || 1,
+      limit: Number(limit) || 50,
       Products,
+      totalPage,
+      pagesArr,
     });
   }
 
