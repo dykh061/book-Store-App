@@ -1,23 +1,31 @@
-<header class="site-header sticky-top border-bottom bg-website">
+<header class="site-header sticky-top bg-website">
   <div
-    class="container header-inner d-flex align-items-center justify-content-between"
+    class="container header-inner d-flex align-items-center justify-content-between py-3"
   >
-    <!-- Logo -->
-    <a href="/home" class="navbar-brand m-0 p-0 d-flex">
-      <img src="/images/logo.png" width="160" height="132" />
+    <a href="/home" class="navbar-brand m-0 p-0 me-4">
+      <img
+        src="/images/logo.png"
+        width="140"
+        height="auto"
+        alt="Bookstore Logo"
+      />
     </a>
 
-    <!-- Search giữa -->
+    <button class="btn btn-categories d-none d-lg-flex me-4" type="button">
+      <i class="bi bi-grid-fill me-2"></i>
+      Categories
+    </button>
+
     <form
-      class="header-search mx-auto flex-grow-1 d-none d-md-block"
+      class="header-search mx-auto flex-grow-1 d-none d-lg-block"
       role="search"
-      style="max-width: 600px;"
+      style="max-width: 500px;"
     >
-      <div class="input-group rounded-pill overflow-hidden">
+      <div class="input-group">
         <input
           type="search"
           class="form-control header-search-input"
-          placeholder="Tìm sản phẩm…"
+          placeholder="Tìm kiếm sách, tác giả..."
         />
         <button class="btn btn-primary header-search-btn" type="submit">
           <i class="bi bi-search"></i>
@@ -25,21 +33,31 @@
       </div>
     </form>
 
-    <!-- Cart + Avatar -->
-    <div class="header-actions d-flex align-items-center gap-4 me-0">
+    <div class="header-actions d-flex align-items-center me-0 ms-lg-4">
+      <a
+        href="#"
+        class="text-decoration-none position-relative header-wishlist d-none d-md-block"
+      >
+        <i class="bi bi-heart"></i>
+        <span
+          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger header-cart-badge"
+        >0</span>
+      </a>
+
       <a href="#" class="text-decoration-none position-relative header-cart">
         <i class="bi bi-cart3"></i>
         <span
           class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger header-cart-badge"
         >3</span>
       </a>
+
       <div class="dropdown">
         <a
           href="#"
           class="d-flex align-items-center text-decoration-none"
           data-bs-toggle="dropdown"
+          aria-expanded="false"
         >
-          <!-- Avatar hiển thị -->
           <img
             src="/images/default-avatar.jpg"
             alt="User Avatar"
@@ -64,10 +82,26 @@
     </div>
   </div>
 
-  <!-- Search mobile -->
-  <div class="container py-2 d-md-none">
+  <nav class="main-nav border-top border-bottom py-1 d-none d-lg-block">
+    <div class="container">
+      <ul class="nav justify-content-center">
+        <li class="nav-item"><a
+            class="nav-link active"
+            aria-current="page"
+            href="/home"
+          >Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Shop</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Vendor</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Pages</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container py-2 d-lg-none header-search-mobile">
     <form role="search">
-      <div class="input-group rounded-pill overflow-hidden">
+      <div class="input-group">
         <input
           type="search"
           class="form-control header-search-input"

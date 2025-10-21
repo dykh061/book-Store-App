@@ -28,7 +28,7 @@ class keyTokenservice {
   };
 
   static updateKeyToken = async ({ _id, tokens, refreshToken }) => {
-    const filter = { user: _id },
+    const filter = { user: _id, refreshToken },
       update = {
         $set: {
           refreshToken: tokens.refreshToken,
@@ -42,7 +42,20 @@ class keyTokenservice {
         new: true, // trả về document mới
       };
 
-    return await keyTokenModel.findOneAndUpdate(filter, update, options);
+    const updated = await keyTokenModel.findOneAndUpdate(
+      filter,
+      update,
+      options
+    );
+    if (!updated) {
+      // 1. Token cũ đã bị rotate (có request khác refresh thành công trước)
+      // 2. Hoặc token reuse / bị đánh cắp
+      await keyTokenModel.deleteMany({ user: _id });
+      throw new UnauthorizedError(
+        "Refresh token mismatch / possible reuse. Please login again."
+      );
+    }
+    return updated;
   };
   static deleteKeyById = async (uId) => {
     return await keyTokenModel.deleteMany({ user: uId });

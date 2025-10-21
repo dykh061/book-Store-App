@@ -1,6 +1,6 @@
 import AccessService from "../../services/access.service.mjs";
 import result from "../../auth/authUtils.mjs";
-const { setAuthCookies } = result;
+const { setAuthCookies, HEADER } = result;
 import productService from "../../services/product.service.mjs";
 import { NotFoundError, BadRequestError } from "../../core/error.response.mjs";
 import { getPaginationArray } from "../../utils/index.mjs";
@@ -46,7 +46,12 @@ class SiteController {
       filter,
     });
 
-    if (!Products) throw new NotFoundError("No products found");
+    if (Products.length === 0) {
+      return res.render("home", {
+        Products: [],
+        message: "Không có sản phẩm nào",
+      });
+    }
     const totalProducts = await productService.countProducts(filter);
     if (!totalProducts) throw new BadRequestError("Invalid found products");
     const totalPage = Math.ceil(totalProducts / limit);
@@ -103,6 +108,10 @@ class SiteController {
         message: "Đăng xuất thất bại, vui lòng thử lại",
       });
     }
+
+    res.clearCookie(HEADER.AUTHORIZATION);
+    res.clearCookie(HEADER.REFRESHTOKEN);
+
     return res.render("auth", {
       layout: "auth",
       showForm: "login",

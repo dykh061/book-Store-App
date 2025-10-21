@@ -30,13 +30,13 @@ const productSchema = new Schema(
     },
     isDraft: {
       type: Boolean,
-      default: true,
+      default: false,
       select: false,
       index: true,
     },
     isPublish: {
       type: Boolean,
-      default: false,
+      default: true,
       select: false,
       index: true,
     },
@@ -68,7 +68,10 @@ const productSchema = new Schema(
   }
 );
 
-productSchema.index({ product_name: "text", product_description: "text" });
+productSchema.index(
+  { product_name: "text", product_description: "text" },
+  { weights: { product_name: 10, product_description: 2 } }
+);
 
 productSchema.pre("save", function (next) {
   this.product_slug = slugify(this.product_name, { lower: true });

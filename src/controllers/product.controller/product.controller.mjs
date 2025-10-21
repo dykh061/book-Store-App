@@ -1,5 +1,9 @@
 import productFactory from "../../services/product.service.mjs";
-import { BadRequestError, NotFoundError } from "../../core/error.response.mjs";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "../../core/error.response.mjs";
 import { CreatedResponse } from "../../core/success.response.mjs";
 import { getPaginationArray } from "../../utils/index.mjs";
 class ProductController {
@@ -7,6 +11,47 @@ class ProductController {
   CreatePage(req, res) {
     res.render("create", {
       layout: "main",
+    });
+  }
+
+  //[GET] search product
+  async getListSearchProduct(req, res) {
+    const {
+      sort,
+      order,
+      limit: rawLimit,
+      page: rawPage,
+      search,
+      ...filter
+    } = req.query;
+    const limit = Number(rawLimit) || 50;
+    const page = Number(rawPage) || 1;
+    const Products = await productService.showProducts({
+      page,
+      limit,
+      sort,
+      order,
+      search,
+      filter,
+    });
+
+    if (Products.length === 0) {
+      return res.render("textSearch", {
+        products: [],
+        message: "Không có sản phẩm nào",
+      });
+    }
+    const totalProducts = await productService.countProducts(filter);
+    if (!totalProducts) throw new BadRequestError("Invalid found products");
+    const totalPage = Math.ceil(totalProducts / limit);
+    const pagesArr = await getPaginationArray(Number(page) || 1, totalPage);
+    res.render("textSearch", {
+      layout: "main",
+      page,
+      limit,
+      Products,
+      totalPage,
+      pagesArr,
     });
   }
 
@@ -22,7 +67,12 @@ class ProductController {
     const limit = Number(rawLimit) || 50;
     const page = Number(rawPage) || 1;
     const userId = req.userId;
-    if (!userId) throw new BadRequestError("Invalid UserId");
+    if (!userId) {
+      const e = new UnauthorizedError();
+      e.action = "LOGIN_REQUIRED";
+      e.redirectTo = req.originalUrl;
+      throw e;
+    }
     filter.product_shopId = userId;
     const products = await productFactory.showProducts({
       limit,
@@ -31,6 +81,12 @@ class ProductController {
       order,
       filter,
     });
+    if (products.length === 0) {
+      return res.render("product", {
+        products: [],
+        message: "Không có sản phẩm nào",
+      });
+    }
     const totalProducts = await productFactory.countProducts(filter);
     if (!totalProducts) throw new BadRequestError("Invalid found products");
     const totalPage = Math.ceil(totalProducts / limit);

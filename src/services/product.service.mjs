@@ -43,19 +43,25 @@ class productFactory {
   static async showProducts({
     limit = 50,
     page = 1,
-    sortField = "ctime",
-    sortOrder = -1,
+    sort = "ctime",
+    order = -1,
     filter = {},
+    search = "",
   }) {
     const skip = (page - 1) * limit;
+    if (search && search.trim() != "") {
+      filter.$text = { $search: search.trim() };
+    }
     const Products = await product
-      .find(filter)
+      .find(filter, search ? { score: { $meta: "textScore" } } : {})
       .populate("product_shopId", "UserName")
-      .sort({ [sortField]: sortOrder })
+      .sort(search ? { score: { $meta: "textScore" } } : { [sort]: order })
       .skip(skip)
       .limit(limit)
       .lean();
-    if (!Products) throw new BadRequestError("Not found products");
+    if (!Array.isArray(Products) || Products.length === 0) {
+      return [];
+    }
 
     return Products;
   }
@@ -63,6 +69,8 @@ class productFactory {
   static async countProducts(filter = {}) {
     return await product.countDocuments(filter);
   }
+
+  static async findProductByText(req, res) {}
 }
 
 class Book extends Product {

@@ -51,16 +51,16 @@ app.use((err, req, res, next) => {
   const mustLogin = err.action === "LOGIN_REQUIRED";
   const redirectTo = err.redirectTo || "/";
 
-  // API JSON
-  if (req.path.startsWith("/v1/api/")) {
-    return res.status(statusCode).json({
-      status: "error",
-      code: statusCode,
-      message,
-      action: mustLogin ? "LOGIN_REQUIRED" : undefined,
-      next: mustLogin ? redirectTo : undefined,
-    });
-  }
+  // // API JSON
+  // if (req.path.startsWith("/v1/api/")) {
+  //   return res.status(statusCode).json({
+  //     status: "error",
+  //     code: statusCode,
+  //     message,
+  //     action: mustLogin ? "LOGIN_REQUIRED" : undefined,
+  //     next: mustLogin ? redirectTo : undefined,
+  //   });
+  // }
 
   // Form signup
   if (req.path === "/signup" && req.method === "POST") {

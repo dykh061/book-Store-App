@@ -11,13 +11,13 @@ router.use(handleRefreshToken);
 router.get("/create", productController.CreatePage);
 router.post(
   "/create",
-  authorize("customer", "admin"),
+  authorize(["customer", "admin"]),
   asyncHandler(productController.createProduct.bind(productController))
 );
 
 router.get(
   "/products",
-  authorize("customer", "admin"),
+  authorize(["customer", "admin"]),
   asyncHandler(productController.getListProductOfUser)
 );
 export default router;

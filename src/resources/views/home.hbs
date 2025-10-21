@@ -1,59 +1,214 @@
 <div class="container py-5">
-  <div class="row g-4 align-items-stretch">
-    {{#each Products}}
-      <div class="col-md-4 col-lg-3">
-        <div class="card h-100 shadow-sm">
-          <img
-            src="{{this.product_thumb}}"
-            class="card-img-top"
-            alt="{{this.product_name}}"
-          />
+  <div
+    class="row align-items-center hero-banner p-4 p-md-5 text-white position-relative"
+    style="
+      background-image: url('https://i.pinimg.com/736x/3d/1e/7d/3d1e7d14aa44a26a55261835bd02cf46.jpg'); 
+      background-size: cover; 
+      background-position: center;
+      min-height: 450px; /* Thiết lập chiều cao tối thiểu */
+    "
+  >
+    <div class="col-lg-6 hero-banner-text z-1">
+      <span class="hero-small-text mb-2 d-block" style="color: #ffc107 !important;">
+        Online And In Stores Only
+      </span>
+      <h1 class="hero-promo-text text-white">
+        50% Off Hundreds Of Books
+      </h1>
+      <p class="lead mb-4 d-none d-md-block text-white-50">
+        Khám phá hàng ngàn tựa sách mới với ưu đãi cực lớn. 
+        Bắt đầu hành trình đọc sách của bạn ngay hôm nay!
+      </p>
+      <a href="#" class="btn btn-lg btn-primary-orange shadow">Shop Now</a>
+    </div>
 
-          <!-- Overlay khi hover -->
+    <div class="col-lg-6 hero-banner-mockup d-flex justify-content-center z-1">
+      <img
+        src="https://i.pinimg.com/736x/65/a2/3b/65a23bd9fb01161c9417960efa315172.jpg"
+        alt="Book Mockup"
+        class="img-fluid"
+      />
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Bestseller Section -->
+  <section class="bestseller-section my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-title">🔥 Bestseller Books</h2>
+      <a href="#" class="btn btn-outline-secondary">
+        View All <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="row g-4 align-items-stretch book-card-grid">
+      {{#each Products}}
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card h-100 shadow-sm">
+          <img src="{{this.product_thumb}}" class="card-img-top" alt="{{this.product_name}}" />
+
           <div class="card-overlay">
             <div class="overlay-content">
               <p>{{this.product_description}}</p>
-              <a href="/products/{{this._id}}" class="btn btn-primary mt-3">Xem
-                chi tiết</a>
+              <a href="/products/{{this._id}}" class="btn btn-primary-orange mt-3">Xem chi tiết</a>
             </div>
           </div>
 
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{this.product_name}}</h5>
-            <p class="text-muted mb-1">Cửa hàng:
-              {{this.product_shopId.UserName}}</p>
-            <p class="price-tag">{{this.product_price}} ₫</p>
+            <h6 class="card-title text-truncate">{{this.product_name}}</h6>
+            <p class="book-author text-muted mb-1">{{this.product_shopId.UserName}}</p>
+            <div class="mb-2">
+              <i class="bi bi-star-fill rating-star"></i>
+              <i class="bi bi-star-fill rating-star"></i>
+              <i class="bi bi-star-fill rating-star"></i>
+              <i class="bi bi-star-half rating-star"></i>
+              <i class="bi bi-star rating-star"></i>
+            </div>
+            <p class="book-price mt-auto">{{this.product_price}} ₫</p>
           </div>
         </div>
       </div>
-    {{/each}}
-  </div>
+      {{/each}}
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="mt-5">
+      <ul class="pagination justify-content-center">
+        <li class="page-item {{#if (eq page 1)}}disabled{{/if}}">
+          <a class="page-link" href="?page={{subtract page 1}}&limit={{limit}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {{#each pagesArr}}
+          {{#if (eq this "...")}}
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+          {{else}}
+            <li class="page-item {{#if (eq this ../page)}}active{{/if}}">
+              <a class="page-link" href="?page={{this}}&limit={{../limit}}">{{this}}</a>
+            </li>
+          {{/if}}
+        {{/each}}
+        <li class="page-item {{#if (eq page totalPage)}}disabled{{/if}}">
+          <a class="page-link" href="?page={{add page 1}}&limit={{limit}}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </section>
+
+  <hr>
+
+  <!-- Deals of the Week -->
+  <section class="deals-of-week my-5">
+    <h2 class="section-title">⏳ Deals Of The Week</h2>
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div
+          class="large-banner d-flex flex-column justify-content-center align-items-center text-center p-4"
+          style="background: linear-gradient(135deg, #1f4068, #16a085);"
+        >
+          <img src="https://via.placeholder.com/150x200?text=Deal+Book" alt="Deal Book Cover" class="img-fluid mb-3 shadow-lg rounded" />
+          <h3 class="text-white">The Midnight Library</h3>
+          <p class="lead">Giảm 40% chỉ trong tuần này!</p>
+          <a href="#" class="btn btn-primary-orange">Mua Ngay</a>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        {{#each Products}}
+        <div class="d-flex align-items-center deal-item p-2 mb-3 border rounded">
+          <img src="{{this.product_thumb}}" alt="{{this.product_name}}" class="img-fluid rounded me-3" style="width: 70px; height: 90px; object-fit: cover;" />
+          <div class="flex-grow-1">
+            <h6 class="mb-0 text-truncate">{{this.product_name}}</h6>
+            <small class="book-author">{{this.product_shopId.UserName}}</small>
+            <div class="small">
+              <i class="bi bi-star-fill rating-star"></i> 4.5
+            </div>
+          </div>
+          <p class="book-price mb-0 ms-3">{{this.product_price}} ₫</p>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- What's in Trend -->
+  <section class="trend-section my-5">
+    <h2 class="section-title">✨ What's In Trend</h2>
+    <div class="row g-3">
+      {{#each Products}}
+      <div class="col-lg-6">
+        <div class="d-flex trend-card p-3">
+          <img src="{{this.product_thumb}}" alt="{{this.product_name}}" class="trend-img rounded me-3" />
+          <div class="flex-grow-1">
+            <h5 class="book-title">{{this.product_name}}</h5>
+            <p class="book-author mb-1">{{this.product_shopId.UserName}}</p>
+            <div class="small mb-2">
+              <i class="bi bi-star-fill rating-star"></i>
+              <i class="bi bi-star-fill rating-star"></i>
+            </div>
+            <p class="book-price mb-0">{{this.product_price}} ₫</p>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- Genres -->
+  <section class="genres-section my-5">
+    <h2 class="section-title text-center">📚 Genres To Explore</h2>
+    <div class="row g-3 text-white">
+      <div class="col-6 col-md-3"><a href="#" class="genre-block bg-danger d-block">Comedy</a></div>
+      <div class="col-6 col-md-3"><a href="#" class="genre-block bg-primary d-block">Love Stories</a></div>
+      <div class="col-6 col-md-3"><a href="#" class="genre-block bg-success d-block">Fantasy</a></div>
+      <div class="col-6 col-md-3"><a href="#" class="genre-block bg-warning text-dark d-block">Science Fiction</a></div>
+      <div class="col-6 col-md-3"><a href="#" class="genre-block bg-info d-block">Biography</a></div>
+      <div class="col-6 col-md-3"><a href="#" class="genre-block bg-secondary d-block">Thriller</a></div>
+      <div class="col-6 col-md-3"><a href="#" class="genre-block bg-dark d-block">Mystery</a></div>
+      <div class="col-6 col-md-3">
+        <a href="#" class="genre-block d-block" style="background-color: #ff5a3c; color: white;">Kids' Books</a>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- Testimonials -->
+  <section class="testimonials-section my-5 py-5 text-center bg-light rounded">
+    <h2 class="section-title">🗣️ What Our Customers Say</h2>
+    <div id="testimonialCarousel" class="carousel slide mx-auto" data-bs-ride="carousel" style="max-width: 800px;">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <p class="lead fst-italic">
+            "Trang web sách tuyệt vời nhất! Giao diện đẹp, dễ tìm kiếm, và giao hàng siêu tốc. Rất recommend!"
+          </p>
+          <footer class="blockquote-footer mt-3">
+            Nguyễn Văn A, <cite title="Source Title">Hà Nội</cite>
+          </footer>
+        </div>
+        <div class="carousel-item">
+          <p class="lead fst-italic">
+            "Tôi yêu các deal sách ở đây. Luôn tìm được sách mới với giá hời. Chắc chắn sẽ quay lại!"
+          </p>
+          <footer class="blockquote-footer mt-3">
+            Trần Thị B, <cite title="Source Title">TP. Hồ Chí Minh</cite>
+          </footer>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </section>
 </div>
-
-<nav aria-label="Page navigation">
-  <ul class="pagination justify-content-center">
-    {{!-- Nút mũi tên lùi --}}
-    <li class="page-item {{#if (eq page 1)}}disabled{{/if}}">
-      <a class="page-link" href="?page={{subtract page 1}}&limit={{limit}}" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-      </a>
-    </li>
-
-    {{!-- Số trang --}}
-    {{#each pagesArr}}
-     {{#if (eq this "...")}}
-      <li class="page-item disabled"><span class="page-link">...</span></li>
-      {{else}}
-      <li class="page-item {{#if (eq this ../page)}}active{{/if}}" >
-        <a class="page-link" href="?page={{this}}&limit={{../limit}}">{{this}}</a>
-      </li>
-      {{/if}}
-    {{/each}}
-    {{!-- Nút mũi tên tiến --}}
-    <li class="page-item {{#if (eq page totalPage)}}disabled{{/if}}">
-      <a class="page-link" href="?page={{add page 1}}&limit={{limit}}" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-      </a>
-    </li>
-  </ul>
-</nav>
